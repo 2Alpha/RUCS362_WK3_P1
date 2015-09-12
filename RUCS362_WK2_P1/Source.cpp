@@ -17,7 +17,7 @@
 
 using namespace std;
 
-struct apartment
+struct residence
 {
 	string phoneNumber;
 	float monthlyRent;
@@ -25,18 +25,24 @@ struct apartment
 };
 
 const int ZERO = 0;
-const int MAX_ENTRIES = 500;
-
-const string INPUT_FILE_1_NAME = "RENTALS.txt"; // File name for input file
+const int MAX_ENTRIES = 5;
+const int IGNORE_AMOUNT = 100;
+const string INPUT_FILE_1_NAME = "RENTALS1.txt"; // File name for input file
 
 void ProgramDescription();
 void UserPrompt1();
 string convert2UpperCase(string stringInput);
 
+void readAndSortData(string inputFileName, int& counter);
+
 int main()
 {
+	int entryCounter; 
+
+
 	ProgramDescription();
 	UserPrompt1();
+	readAndSortData(INPUT_FILE_1_NAME, entryCounter);
 
 
 	system("PAUSE");
@@ -123,20 +129,22 @@ string convert2UpperCase(string stringInput)
 
 }
 
-void readAndSortData(string inputFileName, int recordCount, )
+void readAndSortData(string inputFileName, int& counter)
 {
-	apartment complex[MAX_ENTRIES];
+	residence apartment[MAX_ENTRIES];
 	bool fileOpenSuccess;
+	string error1Response;
 
 	ifstream inputFile; // input file stream variable
+	inputFile.open(inputFileName.c_str());
 
 	if (!inputFile)
 	{
 		fileOpenSuccess = false;
 		cout << endl;
-		cerr << "Error Opening File named \"" << inputFileName << "\"" << endl;
-		system("PAUSE");
-		exit(5);
+		cerr << "Error! System could not open file named \"" << inputFileName << "\"" << endl;
+		cout << "To exit, press X. To proceed starting with no data, press Y." << endl; 
+		cin >> fileReadErrorResponse;
 	}
 
 	else
@@ -148,13 +156,25 @@ void readAndSortData(string inputFileName, int recordCount, )
 	}
 
 
+
+
+
 	// while data remains to be read and max entries has not been reached
-	while ((inputFile) && (recordCount < MAX_ENTRIES))
+
+	for (int apartmentIndex = 0; ((inputFile) && (apartmentIndex < MAX_ENTRIES)); apartmentIndex++)
 	{
-		inputFile >> complex[0].phoneNumber;						// temp student Id 
-		inputFile >> tempStudentClassLevel;				// temp Student Class Level
-		inputFile >> tempCredits;						// temp credits
+
+
+		inputFile >> apartment[apartmentIndex].phoneNumber;
+		inputFile >> apartment[apartmentIndex].monthlyRent;
+		inputFile >> apartment[apartmentIndex].rented;
 		inputFile.ignore(IGNORE_AMOUNT, '\n');
 
+		cout << apartment[apartmentIndex].phoneNumber << endl;
+		cout << apartment[apartmentIndex].monthlyRent << endl;
+		cout << apartment[apartmentIndex].rented << endl;
+		cout << endl; 
+
+	}
 
 }
