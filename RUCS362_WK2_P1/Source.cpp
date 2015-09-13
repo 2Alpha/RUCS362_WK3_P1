@@ -25,24 +25,28 @@ struct residence
 };
 
 const int ZERO = 0;
-const int MAX_ENTRIES = 5;
+const int MAX_ENTRIES = 2;
 const int IGNORE_AMOUNT = 100;
-const string INPUT_FILE_1_NAME = "RENTALS1.txt"; // File name for input file
+const string INPUT_FILE_1_NAME = "RENTALS.txt"; // File name for input file
 
 void ProgramDescription();
 bool UserPrompt1();
 string convert2UpperCase(string stringInput);
 
-void readAndSortData(bool skipFunction, string inputFileName, int& counter);
+void readAndSortData(bool skipFunction, string inputFileName, residence apartment[], int& counter);
+
+void showRentals2Screen(residence apartment[], int& entryCounter);
 
 int main()
 {
 	int entryCounter; 
+	residence apartmentList[MAX_ENTRIES]; 
 
 
 	ProgramDescription();
-	//UserPrompt1();
-	readAndSortData(UserPrompt1(), INPUT_FILE_1_NAME, entryCounter);
+
+	readAndSortData(UserPrompt1(), INPUT_FILE_1_NAME, apartmentList, entryCounter);
+	showRentals2Screen(apartmentList, entryCounter);
 
 
 	system("PAUSE");
@@ -138,12 +142,12 @@ string convert2UpperCase(string stringInput)
 
 }
 
-void readAndSortData(bool skipFunction, string inputFileName, int& counter)
+void readAndSortData(bool skipFunction, string inputFileName, residence apartment[], int& apartmentIndex)
 {
 	if (skipFunction != true)
 	{
 
-		residence apartment[MAX_ENTRIES];
+	
 		bool fileOpenSuccess;
 		bool repeatQuestion;
 
@@ -207,7 +211,7 @@ void readAndSortData(bool skipFunction, string inputFileName, int& counter)
 
 		// while data remains to be read and max entries has not been reached
 
-		for (int apartmentIndex = 0; ((inputFile) && (apartmentIndex < MAX_ENTRIES)); apartmentIndex++)
+		for ( apartmentIndex = 0; ((inputFile) && (apartmentIndex < MAX_ENTRIES)); apartmentIndex++)
 		{
 
 
@@ -216,14 +220,34 @@ void readAndSortData(bool skipFunction, string inputFileName, int& counter)
 			inputFile >> apartment[apartmentIndex].rented;
 			inputFile.ignore(IGNORE_AMOUNT, '\n');
 
-			cout << apartment[apartmentIndex].phoneNumber << endl;
-			cout << apartment[apartmentIndex].monthlyRent << endl;
-			cout << apartment[apartmentIndex].rented << endl;
-			cout << endl;
+			//cout << apartment[apartmentIndex].phoneNumber << endl;
+			//cout << apartment[apartmentIndex].monthlyRent << endl;
+			//cout << apartment[apartmentIndex].rented << endl;
+
+			if (apartmentIndex >= (MAX_ENTRIES - 1))
+			{
+				cout << "Alert! Maximum number of Entries (" << MAX_ENTRIES << ") has been reached" << endl;
+				cout << "No further entries will be read. "<< endl; 
+				inputFile.close();
+			}
+
 
 		}
 
 
 	}
 
+}
+
+void showRentals2Screen(residence apartment[], int& entryCounter)
+{
+
+	cout << "Phone Nmmber"  << setw(15) << "Monthly Rent"  << setw(15) << "Status" << endl; 
+	cout << "-------------" << setw(15) << "-------------" << setw(15) << "-------------" << endl;
+	for (int apartmentIndex = 0; apartmentIndex < entryCounter; apartmentIndex++)
+	{		
+		cout << apartment[apartmentIndex].phoneNumber  << setw(15)
+			 << apartment[apartmentIndex].monthlyRent  << setw(15)
+			 << apartment[apartmentIndex].rented       << endl;
+	}
 }
