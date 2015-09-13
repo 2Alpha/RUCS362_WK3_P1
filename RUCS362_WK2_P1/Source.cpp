@@ -30,10 +30,10 @@ const int IGNORE_AMOUNT = 100;
 const string INPUT_FILE_1_NAME = "RENTALS1.txt"; // File name for input file
 
 void ProgramDescription();
-void UserPrompt1();
+bool UserPrompt1();
 string convert2UpperCase(string stringInput);
 
-void readAndSortData(string inputFileName, int& counter);
+void readAndSortData(bool skipFunction, string inputFileName, int& counter);
 
 int main()
 {
@@ -41,8 +41,8 @@ int main()
 
 
 	ProgramDescription();
-	UserPrompt1();
-	readAndSortData(INPUT_FILE_1_NAME, entryCounter);
+	//UserPrompt1();
+	readAndSortData(UserPrompt1(), INPUT_FILE_1_NAME, entryCounter);
 
 
 	system("PAUSE");
@@ -63,10 +63,11 @@ void ProgramDescription()
 
 }
 
-void UserPrompt1()
+bool UserPrompt1()
 {
 	string promt1Response; 
 	bool errorDetectedR1; // input error detection flag for response 1
+	bool skipReadInputFile; 
 
 	do
 	{
@@ -76,25 +77,33 @@ void UserPrompt1()
 
 		promt1Response = convert2UpperCase(promt1Response);
 
-		if ((promt1Response == "Y") || (promt1Response == "N"))
+		
+		if ((promt1Response != "Y") && (promt1Response != "N"))
 		{
-			errorDetectedR1 = false;
-		}
-
-		else
-		{
+			cout << endl;
+			cout << "ERROR! Unrecognized input, please try again." << endl;
 			errorDetectedR1 = true;
 		}
-
-		if (errorDetectedR1 == true)
+		
+		else if (promt1Response == "Y") 
 		{
-			cout << endl; 
-			cout << "Your input was not accepted, please try again" << endl; 
+			errorDetectedR1 = false;
+			 skipReadInputFile = false;
+		}
+		
+
+		else if (promt1Response == "N")
+		{
+			errorDetectedR1 = false;
+			skipReadInputFile = true;
 		}
 
 	} 
 
 	while (errorDetectedR1 == true);
+
+	return skipReadInputFile; 
+
 
 }
 
@@ -129,51 +138,91 @@ string convert2UpperCase(string stringInput)
 
 }
 
-void readAndSortData(string inputFileName, int& counter)
+void readAndSortData(bool skipFunction, string inputFileName, int& counter)
 {
-	residence apartment[MAX_ENTRIES];
-	bool fileOpenSuccess;
-	string error1Response;
-
-	ifstream inputFile; // input file stream variable
-	inputFile.open(inputFileName.c_str());
-
-	if (!inputFile)
-	{
-		fileOpenSuccess = false;
-		cout << endl;
-		cerr << "Error! System could not open file named \"" << inputFileName << "\"" << endl;
-		cout << "To exit, press X. To proceed starting with no data, press Y." << endl; 
-		cin >> fileReadErrorResponse;
-	}
-
-	else
-	{
-		fileOpenSuccess = true;
-		cout << endl;
-		cout << "Success opening file named \"" << inputFileName << "\"" << endl;
-		cout << endl;
-	}
-
-
-
-
-
-	// while data remains to be read and max entries has not been reached
-
-	for (int apartmentIndex = 0; ((inputFile) && (apartmentIndex < MAX_ENTRIES)); apartmentIndex++)
+	if (skipFunction != true)
 	{
 
+		residence apartment[MAX_ENTRIES];
+		bool fileOpenSuccess;
+		bool repeatQuestion;
 
-		inputFile >> apartment[apartmentIndex].phoneNumber;
-		inputFile >> apartment[apartmentIndex].monthlyRent;
-		inputFile >> apartment[apartmentIndex].rented;
-		inputFile.ignore(IGNORE_AMOUNT, '\n');
+		string error1Response;
+		string fileReadErrorResponse;
 
-		cout << apartment[apartmentIndex].phoneNumber << endl;
-		cout << apartment[apartmentIndex].monthlyRent << endl;
-		cout << apartment[apartmentIndex].rented << endl;
-		cout << endl; 
+		ifstream inputFile; // input file stream variable
+		inputFile.open(inputFileName.c_str());
+
+		if (!inputFile)
+		{
+			fileOpenSuccess = false;
+			cout << endl;
+			cerr << "Error! System could not open file named \"" << inputFileName << "\"" << endl;
+
+
+			do
+			{
+				cout << "To exit, press X. To proceed starting with no data, press Y. ";
+				cin >> fileReadErrorResponse;
+				fileReadErrorResponse = convert2UpperCase(fileReadErrorResponse);
+
+				if ((fileReadErrorResponse != "X") && (fileReadErrorResponse != "Y"))
+				{
+					cout << endl;
+					cout << "ERROR! Unrecognized input, please try again." << endl;
+					cout << endl;
+					repeatQuestion = true;
+				}
+
+				else if (fileReadErrorResponse == "X")
+				{
+					repeatQuestion = false;
+					system("PAUSE");
+					exit(5);
+				}
+
+
+				else if (fileReadErrorResponse == "Y")
+				{
+					repeatQuestion = false;
+				}
+
+
+			}
+
+			while (repeatQuestion == true);
+		}
+
+		else
+		{
+			fileOpenSuccess = true;
+			cout << endl;
+			cout << "Success opening file named \"" << inputFileName << "\"" << endl;
+			cout << endl;
+		}
+
+
+
+
+
+		// while data remains to be read and max entries has not been reached
+
+		for (int apartmentIndex = 0; ((inputFile) && (apartmentIndex < MAX_ENTRIES)); apartmentIndex++)
+		{
+
+
+			inputFile >> apartment[apartmentIndex].phoneNumber;
+			inputFile >> apartment[apartmentIndex].monthlyRent;
+			inputFile >> apartment[apartmentIndex].rented;
+			inputFile.ignore(IGNORE_AMOUNT, '\n');
+
+			cout << apartment[apartmentIndex].phoneNumber << endl;
+			cout << apartment[apartmentIndex].monthlyRent << endl;
+			cout << apartment[apartmentIndex].rented << endl;
+			cout << endl;
+
+		}
+
 
 	}
 
