@@ -386,7 +386,7 @@ string GetPhoneNumber()
 					if (!(isalpha(phoneNumber[index])))
 					{
 						errorCounter++;
-						cout << "not a number" << endl; 
+						cout << "not a number " << endl; 
 
 					}
 
