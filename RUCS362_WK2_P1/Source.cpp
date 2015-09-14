@@ -26,8 +26,10 @@ struct residence
 };
 
 const int ZERO = 0;
+const float FLOAT_ZERO = 0;
 const int MAX_ENTRIES = 5;
 const int IGNORE_AMOUNT = 100;
+const int FIRST_DASH = 4; 
 const string INPUT_FILE_1_NAME = "RENTALS.txt"; // File name for input file
 
 void ProgramDescription();
@@ -35,9 +37,10 @@ bool UserPrompt1();
 string convert2UpperCase(string stringInput);
 
 void readAndSortData(bool skipFunction, string inputFileName, residence apartment[], int& counter);
-char showAddDeleteExit();
+string showAddDeleteExit();
 void AddRentals2Array();
 string GetPhoneNumber();
+float GetMonthlyRent();
 
 void showRentals2Screen(residence apartment[], int& entryCounter);
 
@@ -47,7 +50,7 @@ int main()
 {
 	int entryCounter; 
 	residence apartmentList[MAX_ENTRIES]; 
-	char sadeResponse; 
+	string sadeResponse; 
 
 
 	ProgramDescription();
@@ -55,12 +58,12 @@ int main()
 	readAndSortData(UserPrompt1(), INPUT_FILE_1_NAME, apartmentList, entryCounter);
 	sadeResponse = showAddDeleteExit();
 	
-	if (sadeResponse == 'S')
+	if (sadeResponse == "S")
 	{
 		showRentals2Screen(apartmentList, entryCounter);
 	}
 
-	else if (sadeResponse == 'A')
+	else if (sadeResponse == "A")
 	{
 		AddRentals2Array();
 	}
@@ -286,9 +289,11 @@ void showRentals2Screen(residence apartment[], int& entryCounter)
 			 }
 	}
 }
-char showAddDeleteExit()
+
+
+string showAddDeleteExit()
 {
-	char response2Question;
+	string response2Question;
 	bool repeatQuestion;
 	do {
 
@@ -302,10 +307,10 @@ char showAddDeleteExit()
 		cin >> response2Question;
 		cin.ignore(IGNORE_AMOUNT, '\n');
 
-		response2Question = toupper(response2Question);
+		response2Question = convert2UpperCase(response2Question);
 
 
-		if ((response2Question != 'S') && (response2Question != 'A') && (response2Question != 'D') && (response2Question != 'X'))
+		if ((response2Question != "S") && (response2Question != "A") && (response2Question != "D") && (response2Question != "X"))
 		{
 			cout << endl;
 			cout << "ERROR! Unrecognized input, please try again." << endl;
@@ -338,6 +343,7 @@ void AddRentals2Array()
 	cout << "Step 3. Enter the Rental Status as True (1) or False (0)." << endl;  
 	cout << endl;
 	validPhoneNumber = GetPhoneNumber();
+	monthlyRent = GetMonthlyRent();
 
 
 
@@ -354,64 +360,83 @@ string GetPhoneNumber()
 		int i = ZERO;
 		errorCounter = ZERO;
 		cout << endl;
-		cout << "Enter the phone number : ";
-		cin >> phoneNumber;
+		cout << "Step 1. Enter the phone number : ";
+		getline(cin, phoneNumber);
 
 		length = phoneNumber.length();
 
-		if (length < 10)
+		if (length < 12)
 		{
 			cout << "The phone number you entered is too short" << endl; 
-			//errorDetected = true;
-			//phoneNumer2short = true;
-			//phoneNumber2Long = false;
-			//phoneNumberFit = false;
 			errorCounter++;
 		}
 
-		else if (length > 10)
+		else if (length > 12)
 		{
 			cout << "The phone number you entered is too long" << endl;
-			//errorDetected = true;
-			//phoneNumber2Long = true;
-			//phoneNumer2short = false;
-			//phoneNumberFit = false; 
 			errorCounter++;
 		}
 
-		else if (length = 10)
+		else if (length = 12)
 		{
-			//phoneNumberFit = true;
-			//errorDetected = false;
-			//phoneNumber2Long = false;
-			//phoneNumer2short = false;
-
 			while (phoneNumber[i] != '\0')
 			{
-				// if character is not a digit 
-				if (!(isdigit(phoneNumber[i])))
+				for (int index = ZERO; index < 4; index++)         // Used Loops for error checking 
 				{
-					//cout << "notdigit" << endl; 
-					errorCounter++;
-					i++;
+					if (!(isalpha(phoneNumber[index])))
+					{
+						errorCounter++;
+						cout << "not a number" << endl; 
+
+					}
+
 				}
-
-				else
-					i++;
-			} // end while loop
-
+			}
 		} /// end else if
 
 
 		if ((length = 10) && (errorCounter > 0))
 		{
-			cout << endl << "Error! You Enterd 10 characters but they were not all numbers. Try again." << endl;
+			cout << endl << "Error! You Enterd 12 characters but they were not all numbers. Try again." << endl;
 		}
 	}
 
 	
-	while (errorCounter > 0); // loop if error is detected in user input
+	while (errorCounter > 0); // loop if error counter is greater than zero (0) 
 
 	return phoneNumber;
+
+}
+
+float GetMonthlyRent()
+{
+	int errorCounter;
+	float monthlyRent; 
+
+	do
+	{
+		int i = ZERO;
+		errorCounter = ZERO;
+		cout << endl;
+		cout << "Step 1. Enter the Monthly Rent : ";
+		cin >> monthlyRent;
+
+
+		
+		if (cin.fail())
+		
+		{
+			cin.clear();
+			cin.ignore(999, '\n');
+			errorCounter++;
+			cout << "Error! you did not enter a number between 0 and " << FLT_MAX << " Try again." << endl;
+		}
+		
+
+
+	}
+	while (errorCounter > 0);
+
+	return monthlyRent;
 
 }
