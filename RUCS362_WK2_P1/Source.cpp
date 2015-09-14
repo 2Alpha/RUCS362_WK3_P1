@@ -14,6 +14,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <limits>
 
 using namespace std;
 
@@ -25,7 +26,7 @@ struct residence
 };
 
 const int ZERO = 0;
-const int MAX_ENTRIES = 2;
+const int MAX_ENTRIES = 5;
 const int IGNORE_AMOUNT = 100;
 const string INPUT_FILE_1_NAME = "RENTALS.txt"; // File name for input file
 
@@ -34,19 +35,38 @@ bool UserPrompt1();
 string convert2UpperCase(string stringInput);
 
 void readAndSortData(bool skipFunction, string inputFileName, residence apartment[], int& counter);
+char showAddDeleteExit();
+void AddRentals2Array();
+string GetPhoneNumber();
 
 void showRentals2Screen(residence apartment[], int& entryCounter);
+
+
 
 int main()
 {
 	int entryCounter; 
 	residence apartmentList[MAX_ENTRIES]; 
+	char sadeResponse; 
 
 
 	ProgramDescription();
 
 	readAndSortData(UserPrompt1(), INPUT_FILE_1_NAME, apartmentList, entryCounter);
-	showRentals2Screen(apartmentList, entryCounter);
+	sadeResponse = showAddDeleteExit();
+	
+	if (sadeResponse == 'S')
+	{
+		showRentals2Screen(apartmentList, entryCounter);
+	}
+
+	else if (sadeResponse == 'A')
+	{
+		AddRentals2Array();
+	}
+
+
+
 
 
 	system("PAUSE");
@@ -241,13 +261,157 @@ void readAndSortData(bool skipFunction, string inputFileName, residence apartmen
 
 void showRentals2Screen(residence apartment[], int& entryCounter)
 {
-
-	cout << "Phone Nmmber"  << setw(15) << "Monthly Rent"  << setw(15) << "Status" << endl; 
-	cout << "-------------" << setw(15) << "-------------" << setw(15) << "-------------" << endl;
+	cout << fixed << showpoint << setprecision(2);
+	cout << "Phone Nmmber" << setw(15) << "Monthly Rent "  << setw(15) << "Status" << endl; 
+	cout << "------------" << setw(15) << "------------"   << setw(15) << "------------" << endl;
 	for (int apartmentIndex = 0; apartmentIndex < entryCounter; apartmentIndex++)
 	{		
-		cout << apartment[apartmentIndex].phoneNumber  << setw(15)
-			 << apartment[apartmentIndex].monthlyRent  << setw(15)
-			 << apartment[apartmentIndex].rented       << endl;
+		cout << apartment[apartmentIndex].phoneNumber << setw(15)
+			 << apartment[apartmentIndex].monthlyRent << setw(15);
+			 
+			 if (apartment[apartmentIndex].rented == 1)
+			 {
+				 cout << left;
+				 cout << "   rented" << endl;
+				 cout << right;
+			 }
+
+			 else
+			 {
+				 cout << left; 
+				 cout << "   available" << endl;
+				 cout << right;
+
+				 //cout << apartment[apartmentIndex].rented << endl;
+			 }
 	}
+}
+char showAddDeleteExit()
+{
+	char response2Question;
+	bool repeatQuestion;
+	do {
+
+		cout << "Please choose an option by entering its corresponding letter" << endl;
+		cout << "S = Show rentals to the Screen " << endl;
+		cout << "A = Add rentals to the array " << endl;
+		cout << "D = Delete a rental" << endl;
+		cout << "X = Exit the program" << endl;
+		cout << endl;
+		cout << "Please enter response here: ";
+		cin >> response2Question;
+		cin.ignore(IGNORE_AMOUNT, '\n');
+
+		response2Question = toupper(response2Question);
+
+
+		if ((response2Question != 'S') && (response2Question != 'A') && (response2Question != 'D') && (response2Question != 'X'))
+		{
+			cout << endl;
+			cout << "ERROR! Unrecognized input, please try again." << endl;
+			cout << endl;
+			repeatQuestion = true;
+		}
+
+		else
+		{
+			repeatQuestion = false;
+		}
+	}
+
+	while (repeatQuestion == true);
+
+
+	return response2Question;
+
+}
+void AddRentals2Array()
+{
+	string validPhoneNumber; 
+	float monthlyRent; 
+	bool status;
+
+	cout << "You selected Add Rental to array" << endl; 
+	cout << "There are 3 steps to complete this entry, see below for instructions "<< endl; 
+	cout << "Step 1. Enter a vaild phone number (10  Digits) "<< endl; 
+	cout << "Step 2. Enter the monthly rent. Must greater than 0 and less than " << FLT_MAX << endl;
+	cout << "Step 3. Enter the Rental Status as True (1) or False (0)." << endl;  
+	cout << endl;
+	validPhoneNumber = GetPhoneNumber();
+
+
+
+}
+string GetPhoneNumber()
+{
+	string phoneNumber;
+	int length;                         // length of user input
+
+	int errorCounter;
+
+	do
+	{
+		int i = ZERO;
+		errorCounter = ZERO;
+		cout << endl;
+		cout << "Enter the phone number : ";
+		cin >> phoneNumber;
+
+		length = phoneNumber.length();
+
+		if (length < 10)
+		{
+			cout << "The phone number you entered is too short" << endl; 
+			//errorDetected = true;
+			//phoneNumer2short = true;
+			//phoneNumber2Long = false;
+			//phoneNumberFit = false;
+			errorCounter++;
+		}
+
+		else if (length > 10)
+		{
+			cout << "The phone number you entered is too long" << endl;
+			//errorDetected = true;
+			//phoneNumber2Long = true;
+			//phoneNumer2short = false;
+			//phoneNumberFit = false; 
+			errorCounter++;
+		}
+
+		else if (length = 10)
+		{
+			//phoneNumberFit = true;
+			//errorDetected = false;
+			//phoneNumber2Long = false;
+			//phoneNumer2short = false;
+
+			while (phoneNumber[i] != '\0')
+			{
+				// if character is not a digit 
+				if (!(isdigit(phoneNumber[i])))
+				{
+					//cout << "notdigit" << endl; 
+					errorCounter++;
+					i++;
+				}
+
+				else
+					i++;
+			} // end while loop
+
+		} /// end else if
+
+
+		if ((length = 10) && (errorCounter > 0))
+		{
+			cout << endl << "Error! You Enterd 10 characters but they were not all numbers. Try again." << endl;
+		}
+	}
+
+	
+	while (errorCounter > 0); // loop if error is detected in user input
+
+	return phoneNumber;
+
 }
