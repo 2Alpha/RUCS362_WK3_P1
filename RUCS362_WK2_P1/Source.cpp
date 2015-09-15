@@ -29,7 +29,8 @@ const int ZERO = 0;
 const float FLOAT_ZERO = 0;
 const int MAX_ENTRIES = 5;
 const int IGNORE_AMOUNT = 100;
-const int FIRST_DASH = 4; 
+const int INDEX_4_1ST_DASH = 3;
+const int INDEX_4_2ND_DASH = 7;
 const string INPUT_FILE_1_NAME = "RENTALS.txt"; // File name for input file
 
 void ProgramDescription();
@@ -41,6 +42,7 @@ string showAddDeleteExit();
 void AddRentals2Array();
 string GetPhoneNumber();
 float GetMonthlyRent();
+bool  GetRentalStatus();
 
 void showRentals2Screen(residence apartment[], int& entryCounter);
 
@@ -330,6 +332,7 @@ string showAddDeleteExit()
 	return response2Question;
 
 }
+
 void AddRentals2Array()
 {
 	string validPhoneNumber; 
@@ -338,16 +341,18 @@ void AddRentals2Array()
 
 	cout << "You selected Add Rental to array" << endl; 
 	cout << "There are 3 steps to complete this entry, see below for instructions "<< endl; 
-	cout << "Step 1. Enter a vaild phone number (10  Digits) "<< endl; 
+	cout << "Step 1. Enter a vaild phone number in the format of \"###-###-####\" "<< endl; 
 	cout << "Step 2. Enter the monthly rent. Must greater than 0 and less than " << FLT_MAX << endl;
 	cout << "Step 3. Enter the Rental Status as True (1) or False (0)." << endl;  
 	cout << endl;
 	validPhoneNumber = GetPhoneNumber();
 	monthlyRent = GetMonthlyRent();
+	status = GetRentalStatus();
 
 
 
 }
+
 string GetPhoneNumber()
 {
 	string phoneNumber;
@@ -368,36 +373,80 @@ string GetPhoneNumber()
 		if (length < 12)
 		{
 			cout << "The phone number you entered is too short" << endl; 
+			cout << "Please follow the format \"###-###-####\" Try again." << endl;
 			errorCounter++;
 		}
 
 		else if (length > 12)
 		{
 			cout << "The phone number you entered is too long" << endl;
+			cout << "Please follow the format \"###-###-####\" Try again." << endl;
 			errorCounter++;
 		}
 
 		else if (length = 12)
 		{
-			while (phoneNumber[i] != '\0')
-			{
-				for (int index = ZERO; index < 4; index++)         // Used Loops for error checking 
-				{
-					if (!(isalpha(phoneNumber[index])))
+			
+			for (int index = ZERO; index < 3; index++)         // Used Loops for error checking 
+				{				
+					if (!(isdigit(phoneNumber[index])))
 					{
+						
 						errorCounter++;
-						cout << "not a number " << endl; 
-
+						//cout << "not a number " << endl; 
 					}
 
 				}
+
+
+			for (int index = 3; index < 4; index++)         // Used Loops for error checking 
+			{
+				if (phoneNumber[index] != '-')
+				{
+					errorCounter++;
+					//cout << "dash not where it should be " << endl;
+				}
+
 			}
+
+			for (int index = 4; index < 7; index++)         // Used Loops for error checking 
+			{
+				if (!(isdigit(phoneNumber[index])))
+				{
+					errorCounter++;
+					//cout << "not a number " << endl;
+				}
+
+			}
+
+			for (int index = 7; index < 8; index++)         // Used Loops for error checking 
+			{
+				if (phoneNumber[index] != '-')
+				{
+					errorCounter++;
+					//cout << "dash not where it should be " << endl;
+				}
+
+			}
+
+			for (int index = 8; index < 12; index++)         // Used Loops for error checking 
+			{
+				if (!(isdigit(phoneNumber[index])))
+				{
+					errorCounter++;
+					//cout << "not a number " << endl;
+				}
+
+			}
+
 		} /// end else if
 
 
-		if ((length = 10) && (errorCounter > 0))
+		if ((length = 12) && (errorCounter > 0))
 		{
-			cout << endl << "Error! You Enterd 12 characters but they were not all numbers. Try again." << endl;
+			cout << endl; 
+			cout << "Error! You Enterd 12 characters, however not in the correct format." << endl; 
+			cout << "Please follow the format \"###-###-####\" Try again." << endl;
 		}
 	}
 
@@ -418,7 +467,7 @@ float GetMonthlyRent()
 		int i = ZERO;
 		errorCounter = ZERO;
 		cout << endl;
-		cout << "Step 1. Enter the Monthly Rent : ";
+		cout << "Step 2. Enter the Monthly Rent : ";
 		cin >> monthlyRent;
 
 
@@ -439,4 +488,49 @@ float GetMonthlyRent()
 
 	return monthlyRent;
 
+}
+
+bool  GetRentalStatus()
+{
+	bool repeatQuestion;
+	bool rentalStatusInBool;
+	string rentalStatusResponse; 
+	
+	do 
+	{
+
+		cout << endl;
+		cout << "Step 3. Is the apartment currently rented? Y = yes, N = No" << endl;
+		cin >> rentalStatusResponse;
+
+		rentalStatusResponse = convert2UpperCase(rentalStatusResponse);
+
+		if ((rentalStatusResponse != "Y") && (rentalStatusResponse != "N"))
+		{
+			cout << endl;
+			cout << "ERROR! Unrecognized input, please try again." << endl;
+			cout << endl;
+			repeatQuestion = true;
+		}
+
+
+		else if (rentalStatusResponse == "Y")
+		{
+			repeatQuestion = false;
+			rentalStatusInBool = true; 
+		}
+
+
+
+		else if (rentalStatusResponse == "N")
+		{
+			repeatQuestion = false;
+			rentalStatusInBool = false;
+		}
+	}
+
+
+	while (repeatQuestion == true);
+
+	return rentalStatusInBool;
 }
