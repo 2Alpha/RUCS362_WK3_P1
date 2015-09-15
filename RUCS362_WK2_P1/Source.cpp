@@ -43,8 +43,10 @@ void AddRentals2Array();
 string GetPhoneNumber();
 float GetMonthlyRent();
 bool  GetRentalStatus();
+void  DeleteARental(residence apartment[], int& entryCounter);
 
 void showRentals2Screen(residence apartment[], int& entryCounter);
+
 
 
 
@@ -65,11 +67,18 @@ int main()
 		showRentals2Screen(apartmentList, entryCounter);
 	}
 
+	
 	else if (sadeResponse == "A")
 	{
 		AddRentals2Array();
 	}
 
+	else if (sadeResponse == "D")
+	{
+		DeleteARental(apartmentList, entryCounter);
+
+	}
+	
 
 
 
@@ -441,8 +450,7 @@ string GetPhoneNumber()
 
 		} /// end else if
 
-
-		if ((length = 12) && (errorCounter > 0))
+		if ((length == 12) && (errorCounter > 0))
 		{
 			cout << endl; 
 			cout << "Error! You Enterd 12 characters, however not in the correct format." << endl; 
@@ -533,4 +541,23 @@ bool  GetRentalStatus()
 	while (repeatQuestion == true);
 
 	return rentalStatusInBool;
+}
+
+void  DeleteARental(residence apartment[], int& entryCounter)
+{
+	string PhoneNumber2Delete;
+
+	cout << "List of Phone Numbers for rentals on file:" << endl; 
+
+	for (int apartmentIndex = 0; apartmentIndex < entryCounter; apartmentIndex++) // Display Phone Numbers of all rentals stored,
+	{
+		cout << apartment[apartmentIndex].phoneNumber << endl;
+	}
+
+	cout << endl; 
+	cout << "Enter Phone Number of the rental you wish to delete." << endl; 
+	cout << "Please follow the format \"###-###-####\""<< endl;
+	
+	PhoneNumber2Delete = GetPhoneNumber();
+
 }
