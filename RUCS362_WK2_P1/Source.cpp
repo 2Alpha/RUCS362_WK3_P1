@@ -12,6 +12,7 @@
 
 #include <iostream> 
 #include <fstream>
+#include <cstdio> 
 #include <iomanip>
 #include <string>
 #include <limits>
@@ -32,18 +33,21 @@ const int IGNORE_AMOUNT = 100;
 const int INDEX_4_1ST_DASH = 3;
 const int INDEX_4_2ND_DASH = 7;
 const string INPUT_FILE_1_NAME = "RENTALS.txt"; // File name for input file
+const string OUTPUT_FILE_1_NAME = "RENTALS2.txt"; // File name for input file
 
 void ProgramDescription();
 bool UserPrompt1();
 string convert2UpperCase(string stringInput);
 
-void readAndSortData(bool skipFunction, string inputFileName, residence apartment[], int& counter);
+void readAndSortData(bool runFunction, residence apartment[], int& counter);
 string showAddDeleteExit();
 void AddRentals2Array();
 string GetPhoneNumber();
 float GetMonthlyRent();
 bool  GetRentalStatus();
 void  DeleteARental(residence apartment[], int& entryCounter);
+void SearchAndDistroy(string target, residence apartment[], int& entryCounter);
+void SaveAndOrExit(residence apartment[], int& entryCounter);
 
 void showRentals2Screen(residence apartment[], int& entryCounter);
 
@@ -55,33 +59,53 @@ int main()
 	int entryCounter; 
 	residence apartmentList[MAX_ENTRIES]; 
 	string sadeResponse; 
+	bool runFunction; 
 
 
 	ProgramDescription();
+	runFunction = UserPrompt1();
 
-	readAndSortData(UserPrompt1(), INPUT_FILE_1_NAME, apartmentList, entryCounter);
+	readAndSortData(runFunction, INPUT_FILE_1_NAME, apartmentList, entryCounter);
+
 	sadeResponse = showAddDeleteExit();
-	
-	if (sadeResponse == "S")
-	{
-		showRentals2Screen(apartmentList, entryCounter);
-	}
+
+	showRentals2Screen(apartmentList, entryCounter);
+
+	AddRentals2Array();
+
+	DeleteARental(apartmentList, entryCounter);
+
+	SaveAndOrExit(apartmentList, entryCounter);
+
+
+		sadeResponse = showAddDeleteExit();
+
+		if (sadeResponse == "S")
+		{
+			showRentals2Screen(apartmentList, entryCounter);
+		}
+
+
+		else if (sadeResponse == "A")
+		{
+			AddRentals2Array();
+		}
+
+		else if (sadeResponse == "D")
+		{
+			DeleteARental(apartmentList, entryCounter);
+
+		}
+
+		else if (sadeResponse == "X")
+		{
+			SaveAndOrExit(apartmentList, entryCounter);
+		}
 
 	
-	else if (sadeResponse == "A")
-	{
-		AddRentals2Array();
-	}
 
-	else if (sadeResponse == "D")
-	{
-		DeleteARental(apartmentList, entryCounter);
 
-	}
 	
-
-
-
 
 	system("PAUSE");
 	return ZERO;
@@ -176,12 +200,11 @@ string convert2UpperCase(string stringInput)
 
 }
 
-void readAndSortData(bool skipFunction, string inputFileName, residence apartment[], int& apartmentIndex)
+void readAndSortData(bool runFunction, string inputFileName, residence apartment[], int& apartmentIndex)
 {
-	if (skipFunction != true)
+	if (runFunction != false)
 	{
 
-	
 		bool fileOpenSuccess;
 		bool repeatQuestion;
 
@@ -245,7 +268,7 @@ void readAndSortData(bool skipFunction, string inputFileName, residence apartmen
 
 		// while data remains to be read and max entries has not been reached
 
-		for ( apartmentIndex = 0; ((inputFile) && (apartmentIndex < MAX_ENTRIES)); apartmentIndex++)
+		for (apartmentIndex = 0; ((inputFile) && (apartmentIndex < MAX_ENTRIES)); apartmentIndex++)
 		{
 
 
@@ -261,13 +284,12 @@ void readAndSortData(bool skipFunction, string inputFileName, residence apartmen
 			if (apartmentIndex >= (MAX_ENTRIES - 1))
 			{
 				cout << "Alert! Maximum number of Entries (" << MAX_ENTRIES << ") has been reached" << endl;
-				cout << "No further entries will be read. "<< endl; 
+				cout << "No further entries will be read. " << endl;
 				inputFile.close();
 			}
 
 
 		}
-
 
 	}
 
@@ -560,4 +582,110 @@ void  DeleteARental(residence apartment[], int& entryCounter)
 	
 	PhoneNumber2Delete = GetPhoneNumber();
 
+	SearchAndDistroy(PhoneNumber2Delete, apartment, entryCounter);
+
+	cout << endl<< "after search and deistroy" << endl; 
+	for (int apartmentIndex = 0; apartmentIndex < entryCounter; apartmentIndex++) // Display Phone Numbers of all rentals stored,
+	{
+		cout << apartment[apartmentIndex].phoneNumber << endl;
+	}
+
 }
+
+void SearchAndDistroy (string target, residence apartment[], int& entryCounter)
+{
+	int placeFound = 0;
+	bool targetDistroyed; 
+
+	while ((placeFound < entryCounter) && (apartment[placeFound].phoneNumber != target))
+		placeFound++;                        // increment index
+
+	//If itemToDel was Found, delete it
+	if (placeFound < entryCounter) {
+
+		// Move all values below itemToDel UP one cell
+		for (int num = placeFound + 1; num < entryCounter; num++)
+		{
+			apartment[num - 1].phoneNumber = apartment[num].phoneNumber;
+		}
+
+
+		// Decrement list size
+		entryCounter--;
+
+		// Zero out deleted last item
+		//apartment[entryCounter] = '/0';	// Optional
+
+		cout << endl << "Success!" <<endl; 
+		cout << "Rental entry with phone # \"" << target << "\" has been deleted."; 
+		targetDistroyed = true;
+	}  // end if
+
+	else
+	{
+		cout << endl << "ERROR!" << endl;
+		cout << "Rental entry with phone # \"" << target << "\" cound not be found."<< endl; 
+	}
+}
+
+void SaveAndOrExit(residence apartment[], int& entryCounter)
+{
+	string saveOrExitResponse; 
+	bool repeatQuestion; 
+
+		
+	do
+	{
+		cout << endl;
+		cout << "Before you go" << endl;
+		cout << "Would you like to save any modificatiions that may have occured?" << endl;
+		cout << "Y = yes, N = No : ";
+
+		cin >> saveOrExitResponse;
+
+		saveOrExitResponse = convert2UpperCase(saveOrExitResponse);
+
+		if ((saveOrExitResponse != "Y") && (saveOrExitResponse != "N"))
+			{
+				cout << endl;
+				cout << "ERROR! Unrecognized input, please try again." << endl;
+				cout << endl;
+				repeatQuestion = true;
+			}
+
+
+		else if (saveOrExitResponse == "Y")
+			{
+				repeatQuestion = false;
+				if (remove(OUTPUT_FILE_1_NAME.c_str()) != 0)
+					cout << "delete failed" << endl; 
+
+				ofstream modifiedRentalFile;							// output file steam name
+				modifiedRentalFile.open(OUTPUT_FILE_1_NAME.c_str());     // open file for writing
+				char skip = ' ';
+
+				for (int apartmentIndex = ZERO; apartmentIndex < entryCounter; apartmentIndex++)
+				{
+					modifiedRentalFile << apartment[apartmentIndex].phoneNumber << skip
+									   << apartment[apartmentIndex].monthlyRent << skip
+					                   << apartment[apartmentIndex].rented << endl; 
+				}
+
+				modifiedRentalFile.close();     // close output file
+		
+			}
+
+
+
+		else if (saveOrExitResponse == "N")
+			{
+				repeatQuestion = false;
+				
+			}
+	}
+
+	while (repeatQuestion == true);
+}
+
+
+
