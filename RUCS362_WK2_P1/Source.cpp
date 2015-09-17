@@ -1,14 +1,31 @@
 //***************************************************************************
 //  FILENAME:	 AllenAssn3.cpp
 //  DESCRIPTION: Program that will implement the following. 
-// 				 1. xxxxx
-//				 2. xxxxx
+// 				 1. Optionally Read input file named RENTALS.txt
+//				 2. If data is available, show all rental records on file 
+//				 3. If array space is available, add rental records to the array
+//				 4. If data is available, allow user to delete rental records from the array
+//				 5. Allow the user save changes or exit without saving any changes
 //
 //  DATE:        9/10/15
 //  CLASS/TERM:  CS362_X40_Data Structures - CU_CS362 - XIN_X40_15F8W1
 //  DESIGNER:	 Andrae Allen
 //  FUNCTIONS:	 main - reads values, performs calculations, & displays results
+//               ProgramDescription - Displays a brief discription of the program
+//				 UserPrompt1 - Promt that asks user if they would like to import data from RENTALS.txt
+//				 convert2UpperCase - Converts the lower case characters within a string to upper case
+//				 readAndSortData - Reads and sorts the data from input file RENTALS.txt
+//               showRentals2Screen - Displays all rental records on file via the console  
+//				 showAddDeleteExit - Presents the user with the options of show, add, delete, or exit the program  
+//				 AddRentals2Array - If space is available, allows user to add rental entries to the array
+//				 GetPhoneNumber - Stores the entered phone number specifically in the format ###-###-#### 
+//				 GetMonthlyRent - stores the entered amount for monthly rent 
+//				 GetRentalStatus - Stores the entered amoount for rental statis (available or rented)
+//				 DeleteARental - If array contain data, allows user to delete a specific entry
+//				 SearchAndDistroy - Secondary function used by function DeleteARental
+//				 SaveAndOrExit - Presents the user with the option to save and or exit the program
 //***************************************************************************
+
 
 #include <iostream> 
 #include <fstream>
@@ -26,15 +43,14 @@ struct residence
 	bool rented; 
 };
 
-const int ZERO = 0;
-const float FLOAT_ZERO = 0;
-const int MAX_ENTRIES = 5;
-const int IGNORE_AMOUNT = 100;
-const int INDEX_4_1ST_DASH = 3;
-const int INDEX_4_2ND_DASH = 7;
-const float  MAX_RENT = 999999;
+const int ZERO = 0;              
+const int MAX_ENTRIES = 2;			// Max Entries 
+const int IGNORE_AMOUNT = 100;		// Ignore Amount 
+const int INDEX_4_1ST_DASH = 3;		// Index for First Dash in phone number
+const int INDEX_4_2ND_DASH = 7;		// Index for Second Dash in phone number
+const float  MAX_RENT = 999999;		// Max rental price - this was not specified 
 const string INPUT_FILE_1_NAME = "RENTALS.txt"; // File name for input file
-const string OUTPUT_FILE_1_NAME = "RENTALS2.txt"; // File name for input file
+const string OUTPUT_FILE_1_NAME = "RENTALS.txt"; // File name for output file
 
 void ProgramDescription();
 bool UserPrompt1();
@@ -57,7 +73,7 @@ void showRentals2Screen(string optionSelected, residence apartment[], int& entry
 
 int main()
 {
-	int entryCounter = 0; 
+	int entryCounter = 0;						// entry counter 
 	residence apartmentList[MAX_ENTRIES]; 
 	string sadeResponse; 
 	bool runFunction; 
@@ -86,38 +102,7 @@ int main()
 	while (sadeResponse != "X");
 
 
-	//AddRentals2Array();
 
-	//DeleteARental(apartmentList, entryCounter);
-
-	//SaveAndOrExit(apartmentList, entryCounter);
-
-	/*
-		sadeResponse = showAddDeleteExit();
-
-		if (sadeResponse == "S")
-		{
-			showRentals2Screen(apartmentList, entryCounter);
-		}
-
-
-		else if (sadeResponse == "A")
-		{
-			AddRentals2Array();
-		}
-
-		else if (sadeResponse == "D")
-		{
-			DeleteARental(apartmentList, entryCounter);
-
-		}
-
-		else if (sadeResponse == "X")
-		{
-			
-		}
-
-	*/
 
 
 	
@@ -140,11 +125,17 @@ void ProgramDescription()
 
 }
 
+//*************************************************************************
+//  FUNCTION:	  UserPrompt1
+//  DESCRIPTION:  Promt that asks user if they would like to import data from RENTALS.txt
+//  INPUT:        Parameters:  None
+//  OUTPUT: 	  Return value: ReadInputFile, boolean variable of whether to read input file.  
+//*************************************************************************
 bool UserPrompt1()
 {
-	string promt1Response; 
+	string promt1Response; // prompt #1 response
 	bool errorDetectedR1; // input error detection flag for response 1
-	bool ReadInputFile; 
+	bool ReadInputFile; // Read inout file, boolean variable of whether to read input file
 
 	do
 	{
@@ -177,6 +168,7 @@ bool UserPrompt1()
 
 	} 
 
+	// loop if error detected flag equals true 
 	while (errorDetectedR1 == true);
 
 	return ReadInputFile; 
@@ -184,13 +176,18 @@ bool UserPrompt1()
 
 }
 
-
+//*************************************************************************
+//  FUNCTION:	  convert2UpperCase
+//  DESCRIPTION:  Converts the lower case characters within a string to upper case
+//  INPUT:        Parameters:  stringInput - string to covert all letters uppercase 
+//  OUTPUT: 	  Return value: A string where all the letters are uppercase 
+//*************************************************************************
 string convert2UpperCase(string stringInput)
 {
-	int i = 0;
-	char c;
+	int i = 0;  // variabel used for tracking index location in array
+	char c;		// variable used to temporaliy store character from string
 
-	string upperCasedString;
+	string upperCasedString;		// A string where all the letters are uppercase  
 
 	while (stringInput[i] != '\0')
 	{
@@ -215,20 +212,33 @@ string convert2UpperCase(string stringInput)
 
 }
 
+//*************************************************************************
+//  FUNCTION:	  readAndSortData
+//  DESCRIPTION:  Reads and sorts the data from input file RENTALS.txt
+//  INPUT:        Parameters:  runFunction -  Boolean variable of whether to run function 
+//							   inputFileName - Input file name
+//							   apartment - Array containing apartment records 
+//							   apartmentIndex - appartment index, used to keep track of number of entries
+//
+//  OUTPUT: 	  Return value: None
+//*************************************************************************
 void readAndSortData(bool runFunction, string inputFileName, residence apartment[], int& apartmentIndex)
 {
+	// if runfunction equals true 
 	if (runFunction == true)
 	{
 
-		bool fileOpenSuccess;
-		bool repeatQuestion;
+		bool fileOpenSuccess;				// file open success flag
+		bool repeatQuestion;				// repeat question flag 
 
-		string error1Response;
-		string fileReadErrorResponse;
+		string error1Response;				// error number #1 response 
+		string fileReadErrorResponse;		// file read error response
 
 		ifstream inputFile; // input file stream variable
 		inputFile.open(inputFileName.c_str());
 
+		
+		// if file could not be opened
 		if (!inputFile)
 		{
 			fileOpenSuccess = false;
@@ -266,6 +276,7 @@ void readAndSortData(bool runFunction, string inputFileName, residence apartment
 
 			}
 
+			// while repeat question equals true 
 			while (repeatQuestion == true);
 		}
 
@@ -310,15 +321,26 @@ void readAndSortData(bool runFunction, string inputFileName, residence apartment
 
 }
 
+//*************************************************************************
+//  FUNCTION:	  showRentals2Screen
+//  DESCRIPTION:  Displays all rental records on file via the console
+//  INPUT:        Parameters:  optionSelected -  Menu option selected  
+//							   apartment - Array containing apartment records
+//							   entryCounter - Entry counter 
+//
+//  OUTPUT: 	  Return value: None
+//*************************************************************************
 void showRentals2Screen(string optionSelected, residence apartment[], int& entryCounter)
 {
 
+	// if entry counter equals 0 and the option selected equals S 
 	if ((entryCounter == ZERO) && (optionSelected == "S"))
 	{
 		cout << "After an extensive search, it appears there a no rentals stored." << endl;
 		cout << "Therefore there are no entries to display " << endl;
 	}
 
+	// else if entry counter is greater than 0 and the  option selected equals S
 	else if ((entryCounter > ZERO) && (optionSelected == "S"))
 	{
 
@@ -347,14 +369,20 @@ void showRentals2Screen(string optionSelected, residence apartment[], int& entry
 			}
 		}
 
-	}
+	} // end else if
 }
 
-
+//*************************************************************************
+//  FUNCTION:	  showAddDeleteExit
+//  DESCRIPTION:  Presents the user with the options of show, add, delete, or exit the program
+//  INPUT:        Parameters:  User input from console
+//
+//  OUTPUT: 	  Return value: string response2Question - response to question
+//*************************************************************************
 string showAddDeleteExit()
 {
-	string response2Question;
-	bool repeatQuestion;
+	string response2Question;			// Response to question
+	bool repeatQuestion;				// Repeat question
 	do {
 
 		cout << endl; 
@@ -385,6 +413,7 @@ string showAddDeleteExit()
 		}
 	}
 
+	// while repeat question equals true
 	while (repeatQuestion == true);
 
 
@@ -392,16 +421,32 @@ string showAddDeleteExit()
 
 }
 
+//*************************************************************************
+//  FUNCTION:	  AddRentals2Array
+//  DESCRIPTION:  If space is available, allows user to add rental entries to the array
+//
+//  INPUT:        Parameters:  optionSelected -  Menu option selected  
+//							   apartment - Array containing apartment records
+//							   entryCounter - Entry counter 
+//
+//  OUTPUT: 	  Return value: None
+//*************************************************************************
 void AddRentals2Array (string optionSelected, residence apartment[], int& entryCounter)
 {
-	if (optionSelected == "A")
+	
+	cout << "entry counter = " << entryCounter << endl;
+
+	// if option selcted equls "A" and entry counter equals max entries 
+	if ((optionSelected == "A") && (entryCounter == MAX_ENTRIES))
 	{
+		cout << "The maximum amount of entries (" << MAX_ENTRIES << ") has been reached." << endl;
+		cout << "Therefore you cannot add any more entries" << endl;
+	}
 
-		cout << "entry counter = " << entryCounter << endl;
-
-		string validPhoneNumber;
-		float monthlyRent;
-		bool status;
+	
+	// else if option selcted equls "A" and entry counter is less than max entries  
+	else if ((optionSelected == "A") && (entryCounter < MAX_ENTRIES))
+	{
 
 		cout << "You selected Add Rental to array" << endl;
 		cout << "There are 3 steps to complete this entry, see below for instructions " << endl;
@@ -415,9 +460,8 @@ void AddRentals2Array (string optionSelected, residence apartment[], int& entryC
 		apartment[entryCounter].rented = GetRentalStatus();
 		entryCounter++;
 
+		cout << "Entry successfully added!" << endl << endl;
 	}
-
-
 
 
 }
@@ -629,12 +673,6 @@ void  DeleteARental(string optionSelected, residence apartment[], int& entryCoun
 		PhoneNumber2Delete = GetPhoneNumber();
 
 		SearchAndDistroy(PhoneNumber2Delete, apartment, entryCounter);
-
-		cout << endl << "after search and deistroy" << endl;
-		for (int apartmentIndex = 0; apartmentIndex < entryCounter; apartmentIndex++) // Display Phone Numbers of all rentals stored,
-		{
-			cout << apartment[apartmentIndex].phoneNumber << endl;
-		}
 	}
 }
 
@@ -663,7 +701,8 @@ void SearchAndDistroy (string target, residence apartment[], int& entryCounter)
 		//apartment[entryCounter] = '/0';	// Optional
 
 		cout << endl << "Success!" <<endl; 
-		cout << "Rental entry with phone # \"" << target << "\" has been deleted."; 
+		cout << "Rental entry with phone # \"" << target << "\" has been deleted.";
+		cout << endl; 
 		targetDistroyed = true;
 	}  // end if
 
@@ -731,6 +770,7 @@ void SaveAndOrExit(string optionSelected, residence apartment[], int& entryCount
 			else if (saveOrExitResponse == "N")
 			{
 				repeatQuestion = false;
+				cout << "FYI, any changes made will not be saved. " << endl;
 
 			}
 		}
