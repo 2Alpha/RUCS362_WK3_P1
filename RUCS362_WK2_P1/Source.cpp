@@ -19,8 +19,8 @@
 //				 showAddDeleteExit - Presents the user with the options of show, add, delete, or exit the program  
 //				 AddRentals2Array - If space is available, allows user to add rental entries to the array
 //				 GetPhoneNumber - Stores the entered phone number specifically in the format ###-###-#### 
-//				 GetMonthlyRent - stores the entered amount for monthly rent 
-//				 GetRentalStatus - Stores the entered amoount for rental statis (available or rented)
+//				 GetMonthlyRent - Stores the entered amount for monthly rent 
+//				 GetRentalStatus - Stores the entered amoount for rental status (available or rented)
 //				 DeleteARental - If array contain data, allows user to delete a specific entry
 //				 SearchAndDistroy - Secondary function used by function DeleteARental
 //				 SaveAndOrExit - Presents the user with the option to save and or exit the program
@@ -32,7 +32,6 @@
 #include <cstdio> 
 #include <iomanip>
 #include <string>
-#include <limits>
 
 using namespace std;
 
@@ -68,19 +67,16 @@ void SaveAndOrExit(string optionSelected, residence apartment[], int& entryCount
 
 void showRentals2Screen(string optionSelected, residence apartment[], int& entryCounter);
 
-
-
-
 int main()
 {
-	int entryCounter = 0;						// entry counter 
-	residence apartmentList[MAX_ENTRIES]; 
-	string sadeResponse; 
-	bool runFunction; 
+	int entryCounter = 0;						// Entry Counter 
+	residence apartmentList[MAX_ENTRIES];		// Array for storing apartment entries 
+	string sadeResponse;						// Show, Add, Delete, or Exit resonse variable  
+	bool runFunction;							// Run Function 
 
 
 	ProgramDescription();
-	runFunction = UserPrompt1();
+	runFunction = UserPrompt1();				  
  
 	readAndSortData(runFunction, INPUT_FILE_1_NAME, apartmentList, entryCounter);
 
@@ -99,13 +95,9 @@ int main()
 
 	}
 
+	// While response does not equal exit  
 	while (sadeResponse != "X");
 
-
-
-
-
-	
 
 	system("PAUSE");
 	return ZERO;
@@ -289,9 +281,6 @@ void readAndSortData(bool runFunction, string inputFileName, residence apartment
 		}
 
 
-
-
-
 		// while data remains to be read and max entries has not been reached
 
 		for (apartmentIndex = 0; ((inputFile) && (apartmentIndex < MAX_ENTRIES)); apartmentIndex++)
@@ -466,12 +455,20 @@ void AddRentals2Array (string optionSelected, residence apartment[], int& entryC
 
 }
 
+//*************************************************************************
+//  FUNCTION:	  GetPhoneNumber
+//  DESCRIPTION:  Stores the entered phone number specifically in the format ###-###-####
+//
+//  INPUT:        Parameters:  None
+//
+//  OUTPUT: 	  Return value: string phoneNumber - Phone Number 
+//*************************************************************************
 string GetPhoneNumber()
 {
-	string phoneNumber;
-	int length;                         // length of user input
+	string phoneNumber;					// Phone Number 
+	int length;                         // Length of user input
 
-	int errorCounter;
+	int errorCounter;					// Error Counter
 
 	do
 	{
@@ -569,10 +566,18 @@ string GetPhoneNumber()
 
 }
 
+//*************************************************************************
+//  FUNCTION:	  GetMonthlyRent
+//  DESCRIPTION:  Stores the entered amount for monthly rent
+//
+//  INPUT:        Parameters:  None
+//
+//  OUTPUT: 	  Return value: float monthlyRent - Monthly Rent 
+//*************************************************************************
 float GetMonthlyRent()
 {
-	int errorCounter;
-	float monthlyRent; 
+	int errorCounter;								// Error Counter 
+	float monthlyRent;								// Monthly Rent
 
 	do
 	{
@@ -581,8 +586,6 @@ float GetMonthlyRent()
 		cout << endl;
 		cout << "Step 2. Enter the Monthly Rent : ";
 		cin >> monthlyRent;
-
-
 		
 		if ((cin.fail()) || (monthlyRent > MAX_RENT))
 		
@@ -593,19 +596,27 @@ float GetMonthlyRent()
 			cout << "Error! you did not enter a number between 0 and " << MAX_RENT << " Try again." << endl;
 		}
 		
-
-
 	}
+	
+	// while error counter is greater than zero 
 	while (errorCounter > 0);
 
 	return monthlyRent;
 
 }
 
+//*************************************************************************
+//  FUNCTION:	  GetRentalStatus
+//  DESCRIPTION:  Stores the entered amoount for rental status (available or rented)
+//
+//  INPUT:        Parameters:  None
+//
+//  OUTPUT: 	  Return value: bool  rentalStatusInBool - Rental Status in boolean 
+//*************************************************************************
 bool  GetRentalStatus()
 {
-	bool repeatQuestion;
-	bool rentalStatusInBool;
+	bool repeatQuestion;				// Repeat Question 
+	bool rentalStatusInBool;			// Rental Status in boolean 
 	string rentalStatusResponse; 
 	
 	do 
@@ -642,11 +653,22 @@ bool  GetRentalStatus()
 	}
 
 
+	// while repeat question equals true
 	while (repeatQuestion == true);
 
 	return rentalStatusInBool;
 }
 
+//*************************************************************************
+//  FUNCTION:	  DeleteARental
+//  DESCRIPTION:  If array contain data, allows user to delete a specific entry
+//
+//  INPUT:        Parameters:  optionSelected -  Menu option selected  
+//							   apartment - Array containing apartment records
+//							   entryCounter - Entry counter 
+//
+//  OUTPUT: 	  Return value: None
+//*************************************************************************
 void  DeleteARental(string optionSelected, residence apartment[], int& entryCounter)
 {
 	if ((entryCounter == ZERO) && (optionSelected == "D"))
@@ -676,7 +698,18 @@ void  DeleteARental(string optionSelected, residence apartment[], int& entryCoun
 	}
 }
 
-void SearchAndDistroy (string target, residence apartment[], int& entryCounter)
+//*************************************************************************
+//  FUNCTION:	  SearchAndDistroy
+//  DESCRIPTION:  Secondary function used by function DeleteARental, locates target to delete 
+//				  and makes coresponding adjustments to array 
+//
+//  INPUT:        Parameters:  target -  string to search for in records   
+//							   apartment - Array containing apartment records
+//							   entryCounter - Entry counter 
+//
+//  OUTPUT: 	  Return value: None
+//*************************************************************************
+void  SearchAndDistroy (string target, residence apartment[], int& entryCounter)
 {
 	int placeFound = 0;
 	bool targetDistroyed; 
@@ -713,16 +746,24 @@ void SearchAndDistroy (string target, residence apartment[], int& entryCounter)
 	}
 }
 
-void SaveAndOrExit(string optionSelected, residence apartment[], int& entryCounter)
+//*************************************************************************
+//  FUNCTION:	  SaveAndOrExit
+//  DESCRIPTION:  Presents the user with the option to save and or exit the program
+//
+//  INPUT:        Parameters:  optionSelected -  Menu option selected  
+//							   apartment - Array containing apartment records
+//							   entryCounter - Entry counter 
+//
+//  OUTPUT: 	  Return value: None
+//*************************************************************************
+void SaveAndOrExit (string optionSelected, residence apartment[], int& entryCounter)
 {
+	// If option selected equals exit "X"
 	if (optionSelected == "X")
 	{
 
-
-
 		string saveOrExitResponse;
 		bool repeatQuestion;
-
 
 		do
 		{
@@ -766,7 +807,6 @@ void SaveAndOrExit(string optionSelected, residence apartment[], int& entryCount
 			}
 
 
-
 			else if (saveOrExitResponse == "N")
 			{
 				repeatQuestion = false;
@@ -775,8 +815,10 @@ void SaveAndOrExit(string optionSelected, residence apartment[], int& entryCount
 			}
 		}
 
+		// While repeat Question equals true
 		while (repeatQuestion == true);
-	}
+	
+	} // end top if statement  
 }
 
 
