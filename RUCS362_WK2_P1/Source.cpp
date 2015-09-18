@@ -303,8 +303,7 @@ void readAndSortData(bool runFunction, string inputFileName, residence apartment
 				inputFile.close();
 			}
 
-
-		}
+		} // end for loop  
 
 	}
 
